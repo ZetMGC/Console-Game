@@ -93,18 +93,21 @@ class Person:
                 self.hpmax = 125
                 self.hp = self.hpmax
                 self.armor = 0.45
+                self.stamina = 100
                 break
             elif pclass == 2:
                 self.pclass = magician
                 self.hpmax = 75
                 self.hp = self.hpmax
                 self.armor = 0.15
+                self.stamina = 100
                 break
             elif pclass == 3:
                 self.pclass = archer
                 self.hpmax = 100
                 self.hp = self.hpmax
                 self.armor = 0.30
+                self.stamina = 100
                 break
             else:
                 print(Back.RED + "Вы выбрали неверное значение." + Style.RESET_ALL)

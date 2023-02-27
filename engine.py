@@ -106,7 +106,7 @@ def caseHandler(currentcase, character, enemy):
                 if len(character.weaponitem) < 1:
                     while True:
                         system("CLS")
-                        print("У тебя нет оjaружия\n")
+                        print("У тебя нет оружия\n")
                         print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
                         decide = int(input())
                         if decide == 0:
@@ -200,7 +200,11 @@ def battleHandler(character, enemy, battleaction):
         enemy.hp -= character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)
         enemy.hp = round(enemy.hp, 1)
     elif battleaction == dodge:
-        print("Уклонение")
+        if character.stamina >= 80:
+            if random(0,3) > 0:
+                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 2 - (character.current_weapon.damage * character.current_armor)
+                enemy.hp = round(enemy.hp, 1)
+                character.stamina -= 20
     elif battleaction == block:
         print("Блок")
     elif battleaction == hide:
