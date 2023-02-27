@@ -8,6 +8,9 @@ from colorama import Fore, Back, Style
 PersonClass = ("PC_MAGICIAN", "PC_WARRIOR", "PC_ARCHER")
 magician, warrior, archer = PersonClass
 
+RangeClass = ("RC_NEAR", "RC_AVERAGE", "RC_FAR")
+near, average, far = RangeClass
+
 ItemClass = ("IC_POTION","IC_UNKNOWNPOTION", "IC_WEAPON", "IC_ARMOR", "IC_ACCESSORY")
 potion, unknownpotion, weapon, armor, acc = ItemClass
 
@@ -155,12 +158,13 @@ class Item:
 #--------------------------------------
 
 class Enemy:
-    def __init__(self, name, damage, hp, armor, location):
+    def __init__(self, name, damage, hp, armor, location, range):
         self.name = name
         self.damage = damage
         self.hp = hp
         self.armor = armor
         self.location = location
+        self.range = range
 
 class Location:
     def __init__(self, name, locationclass):
