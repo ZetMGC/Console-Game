@@ -5,8 +5,8 @@ from colorama import Fore, Back, Style
 
 #--------------------------------------
 
-BattleActions = ("BA_ATTACK", "BA_DODGE", "BA_BLOCK", "BA_HIDE")
-attack, dodge, block, hide = BattleActions
+BattleActions = ("BA_ATTACK", "BA_DODGE", "BA_BLOCK", "BA_HIDE",  "BA_CHANGEPOS")
+attack, dodge, block, hide, changepos = BattleActions
 
 CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY")
 training, battle, walking, ineventory = CaseClass
@@ -20,8 +20,8 @@ Potions = [ classes.Item("Малое зелье здоровья", classes.potio
 
 Weapons = [ classes.Item("Деревянный меч", classes.weapon, 0, 0, 3, 0, 0, 25)]
 
-Enemies = [ classes.Enemy("Кряква", 2, 10, 0, classes.spawn), 
-            classes.Enemy("Каменный паук", 2, 10, 0.2, classes.forrest)]
+Enemies = [ classes.Enemy("Кряква", 2, 10, 0, classes.spawn, classes.near), 
+            classes.Enemy("Каменный паук", 2, 10, 0.2, classes.forrest, classes.near)]
 
 Locations = [ classes.Location("Спавн", classes.spawn),
               classes.Location("Лес", classes.forrest)]
@@ -43,6 +43,7 @@ def caseHandler(currentcase, character, enemy):
                 print(Fore.RED + "1. АТАКОВАТЬ" + Style.RESET_ALL)
                 print(Fore.RED + "2. УКЛОНИТЬСЯ" + Style.RESET_ALL)
                 print(Fore.RED + "3. БЛОКИРОВАТЬ" + Style.RESET_ALL)
+                print(Fore.RED + "4. ЗАНЯТЬ ВЫГОДНУЮ ПОЗИЦИЮ" + Style.RESET_ALL)
                 print(Fore.RED + "0. СБЕЖАТЬ" + Style.RESET_ALL)
 
                 decide = int(input())
@@ -52,6 +53,8 @@ def caseHandler(currentcase, character, enemy):
                     battleHandler(character, enemy, dodge)
                 elif decide == 3:
                     battleHandler(character, enemy, block)
+                elif  decide == 4:
+                    battleHandler(character, enemy, changepos)
                 elif decide == 0:
                     battleHandler(character, enemy, hide)
                 else:
@@ -177,6 +180,11 @@ def caseHandler(currentcase, character, enemy):
 
 def interface(currentcase):
     print()
+
+def positionChanger(currentPos, rangeClass, stamina=100):
+    if stamina > 80:
+        if random(0, 3) > 0:
+            print("fuck")
 
 def decider(case, character):
     if character.current_location.locationclass == classes.spawn:
