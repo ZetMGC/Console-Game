@@ -206,7 +206,7 @@ def battleHandler(character, enemy, battleaction):
                 enemy.hp = round(enemy.hp, 1)
                 character.stamina -= 20
     elif battleaction == block:
-        print("Блок")
+        print("Блок.")
     elif battleaction == hide:
         print("Спрятаться")
 
