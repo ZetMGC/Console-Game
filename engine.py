@@ -60,8 +60,6 @@ def caseHandler(currentcase, character, enemy):
                 else:
                     continue
 
-                character.hp -= enemy.damage - (enemy.damage * character.armor)
-                character.hp = round(character.hp, 1)
             elif enemy.hp <= 0:
                 system('CLS')
                 print("ПОБЕДИЛ")
@@ -172,7 +170,7 @@ def caseHandler(currentcase, character, enemy):
             elif decide == 2:
                 break
             elif decide == 3:
-                break
+                character.current_location = Locations[Locations.index(character.current_location) - 1]
             elif decide == 0:
                 caseHandler(ineventory, character, None)
             else:
@@ -198,21 +196,50 @@ def enemyChecker(current_location):
     SituableEnemies = []
     for enemy in Enemies:
         if current_location == enemy.location:
-            SituableEnemies.append(classes.Enemy(enemy.name, enemy.damage, enemy.hp, enemy.armor, enemy.location))
+            SituableEnemies.append(classes.Enemy(enemy.name, enemy.damage, enemy.hp, enemy.armor, enemy.location, enemy.range))
     
     return random.choice(SituableEnemies)
 
 
 def battleHandler(character, enemy, battleaction):
+    # АТАКА
     if battleaction == attack:
+        # Атака противника влоб
         enemy.hp -= character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)
         enemy.hp = round(enemy.hp, 1)
+        # Противник атакует в ответ
+        character.hp -= enemy.damage - (enemy.damage * character.armor)
+        character.hp = round(character.hp, 1)
+
+    # УКЛОНЕНИЕ
     elif battleaction == dodge:
         if character.stamina >= 80:
-            if random(0,3) > 0:
+            if random.randint(0, 3) > 0:
+                # удалось уклониться, атакуем двойным уроном, сами урона не получаем
                 enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 2 - (character.current_weapon.damage * character.current_armor)
                 enemy.hp = round(enemy.hp, 1)
                 character.stamina -= 20
+            else:
+                # Враг атакует, если уколниться не удалось
+                character.hp -= enemy.damage - (enemy.damage * character.armor)
+                character.hp = round(character.hp, 1)
+                character.stamina -= 20
+        elif character.stamina >= 50:
+            # При меньшей стамине шанс уклонения ниже
+            if random.randint(0,5) > 3:
+                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 1.5 - (character.current_weapon.damage * character.current_armor)
+                enemy.hp = round(enemy.hp, 1)
+                character.stamina -= 20
+            else:
+                character.hp -= enemy.damage - (enemy.damage * character.armor)
+                character.hp = round(character.hp, 1)
+                character.stamina -= 20
+        else:
+            character.hp -= enemy.damage - (enemy.damage * character.armor)
+            character.hp = round(character.hp, 1)
+            character.stamina -= 20
+
+    # БЛОК
     elif battleaction == block:
         print("Блок")
     elif battleaction == hide:
