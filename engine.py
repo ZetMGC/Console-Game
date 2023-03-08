@@ -1,12 +1,11 @@
-from os import system
-import classes
 import random
+import  classes
+from battle import battleHandler
+from os import system
+from classes import Item, Enemy, Location
 from colorama import Fore, Back, Style
 
 #--------------------------------------
-
-BattleActions = ("BA_ATTACK", "BA_DODGE", "BA_BLOCK", "BA_HIDE",  "BA_CHANGEPOS")
-attack, dodge, block, hide, changepos = BattleActions
 
 CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY")
 training, battle, walking, ineventory = CaseClass
@@ -15,59 +14,22 @@ CurrentCase = None
 
 #--------------------------------------
 
-Potions = [ classes.Item("Малое зелье здоровья", classes.potion, 0, 0, 0, 15, 0, 10),
-            classes.Item("Среднее зелье здоровья", classes.potion, 0, 0, 0, 30, 0, 20)]
+Potions = [ Item("Малое зелье здоровья", classes.potion, 0, 0, 0, 15, 0, 10),
+            Item("Среднее зелье здоровья", classes.potion, 0, 0, 0, 30, 0, 20)]
 
-Weapons = [ classes.Item("Деревянный меч", classes.weapon, 0, 0, 3, 0, 0, 25)]
+Weapons = [ Item("Деревянный меч", classes.weapon, 0, 0, 3, 0, 0, 25)]
 
-Enemies = [ classes.Enemy("Кряква", 2, 10, 0, classes.spawn, classes.near), 
-            classes.Enemy("Каменный паук", 2, 10, 0.2, classes.forrest, classes.near)]
+Enemies = [ Enemy("Кряква", 2, 10, 0, classes.spawn, classes.near), 
+            Enemy("Каменный паук", 2, 10, 0.2, classes.forrest, classes.near)]
 
-Locations = [ classes.Location("Спавн", classes.spawn),
-              classes.Location("Лес", classes.forrest)]
+Locations = [ Location("Спавн", classes.spawn, 0.15),
+              Location("Лес", classes.forrest, 0.2)]
 
 #--------------------------------------
-
+#обработчик выборов игоком и реакции интерфейса на выбор
 def caseHandler(currentcase, character, enemy):
     if currentcase == battle:
-        while True:
-            if enemy.hp > 0 and character.hp > 0:
-                system('CLS')
-                print(Back.RED + "БИТВА" + Style.RESET_ALL)
-                print("<------------------------------------------------------>\n")
-
-                print("Твое здоровье:", Fore.GREEN + str(character.hp) + Style.RESET_ALL, ".\nТвое оружие наносит:", Fore.GREEN + str(character.current_weapon.damage) + Style.RESET_ALL, "урона.\n")
-                print("Твой противник", Fore.RED + enemy.name + Style.RESET_ALL, ", он имеет", Fore.RED + str(enemy.hp) + Style.RESET_ALL, "здоровья.\n")
-
-                print("<------------------------------------------------------>\n")
-                print(Fore.RED + "1. АТАКОВАТЬ" + Style.RESET_ALL)
-                print(Fore.RED + "2. УКЛОНИТЬСЯ" + Style.RESET_ALL)
-                print(Fore.RED + "3. БЛОКИРОВАТЬ" + Style.RESET_ALL)
-                print(Fore.RED + "4. ЗАНЯТЬ ВЫГОДНУЮ ПОЗИЦИЮ" + Style.RESET_ALL)
-                print(Fore.RED + "0. СБЕЖАТЬ" + Style.RESET_ALL)
-
-                decide = int(input())
-                if decide == 1:
-                    battleHandler(character, enemy, attack)
-                elif decide == 2:
-                    battleHandler(character, enemy, dodge)
-                elif decide == 3:
-                    battleHandler(character, enemy, block)
-                elif  decide == 4:
-                    battleHandler(character, enemy, changepos)
-                elif decide == 0:
-                    battleHandler(character, enemy, hide)
-                else:
-                    continue
-
-            elif enemy.hp <= 0:
-                system('CLS')
-                print("ПОБЕДИЛ")
-                break
-            elif character.hp <= 0:
-                system('CLS')
-                print("ПРОИГРАЛ")
-                break
+        character, enemy = battleHandler(character, enemy)
 
     elif currentcase == ineventory:
         while True:
@@ -186,7 +148,7 @@ def positionChanger(currentPos, rangeClass, stamina=100):
 
 def decider(case, character):
     if character.current_location.locationclass == classes.spawn:
-        if case >= 85:
+        if case < character.current_location.enemychanse:
             caseHandler(battle, character, enemyChecker(character.current_location.locationclass))
         else:
             caseHandler(walking, character, None)
@@ -199,52 +161,6 @@ def enemyChecker(current_location):
             SituableEnemies.append(classes.Enemy(enemy.name, enemy.damage, enemy.hp, enemy.armor, enemy.location, enemy.range))
     
     return random.choice(SituableEnemies)
-
-
-def battleHandler(character, enemy, battleaction):
-    # АТАКА
-    if battleaction == attack:
-        # Атака противника влоб
-        enemy.hp -= character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)
-        enemy.hp = round(enemy.hp, 1)
-        # Противник атакует в ответ
-        character.hp -= enemy.damage - (enemy.damage * character.armor)
-        character.hp = round(character.hp, 1)
-
-    # УКЛОНЕНИЕ
-    elif battleaction == dodge:
-        if character.stamina >= 80:
-            if random.randint(0, 3) > 0:
-                # удалось уклониться, атакуем двойным уроном, сами урона не получаем
-                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 2 - (character.current_weapon.damage * character.current_armor)
-                enemy.hp = round(enemy.hp, 1)
-                character.stamina -= 20
-            else:
-                # Враг атакует, если уколниться не удалось
-                character.hp -= enemy.damage - (enemy.damage * character.armor)
-                character.hp = round(character.hp, 1)
-                character.stamina -= 20
-        elif character.stamina >= 50:
-            # При меньшей стамине шанс уклонения ниже
-            if random.randint(0,5) > 3:
-                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 1.5 - (character.current_weapon.damage * character.current_armor)
-                enemy.hp = round(enemy.hp, 1)
-                character.stamina -= 20
-            else:
-                character.hp -= enemy.damage - (enemy.damage * character.armor)
-                character.hp = round(character.hp, 1)
-                character.stamina -= 20
-        else:
-            character.hp -= enemy.damage - (enemy.damage * character.armor)
-            character.hp = round(character.hp, 1)
-            character.stamina -= 20
-
-    # БЛОК
-    elif battleaction == block:
-        print("Блок")
-    elif battleaction == hide:
-        print("Спрятаться")
-
 #--------------------------------------
 
 def main():
@@ -258,7 +174,7 @@ def main():
     player.potionitem.append(Potions[0])
     player.weaponitem.append(Weapons[0])
     while player.hp > 0:
-        decider(random.randint(0, 100), player)
+        decider(random.random(), player)
         score += 1
 
 if __name__ == "__main__":

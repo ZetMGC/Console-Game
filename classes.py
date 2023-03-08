@@ -8,6 +8,9 @@ from colorama import Fore, Back, Style
 PersonClass = ("PC_MAGICIAN", "PC_WARRIOR", "PC_ARCHER")
 magician, warrior, archer = PersonClass
 
+CharacterBonus = ("CB_STUN", "CB_BLEEDING", "CB_POISONING", "CB_REGEN", "CB_GAIN", "CB_WEAKNESS") # Оглушение, кровотечение, отравление, регенерация, усиление, слабость
+stun, bleeding, poisoning, regen, gain, weakness = CharacterBonus
+
 RangeClass = ("RC_NEAR", "RC_AVERAGE", "RC_FAR")
 near, average, far = RangeClass
 
@@ -29,6 +32,7 @@ class Person:
         self.pclass = None
         self.hp = None
         self.hpmax = None
+        self.bonus = None
 
         self.armor = None
         self.arrows = None
@@ -118,7 +122,7 @@ class Person:
 #--------------------------------------
 
 class Item:
-    def __init__(self, name, itemclass, armor, hp, damage, heal, manaheal, weight):
+    def __init__(self, name, itemclass, armor, hp, damage, heal, manaheal, weight, critdamage):
         self.name = name
         self.itemclass = itemclass
         self.armor = armor
@@ -126,7 +130,8 @@ class Item:
         self.damage = damage
         self.heal = heal 
         self.manaheal = manaheal  
-        self.weight = weight  
+        self.weight = weight
+        
 
     def info(self):
         while True:
@@ -167,6 +172,7 @@ class Enemy:
         self.range = range
 
 class Location:
-    def __init__(self, name, locationclass):
+    def __init__(self, name, locationclass, enemychanse):
         self.locationclass = locationclass
         self.name = name
+        self.enemychanse = enemychanse
