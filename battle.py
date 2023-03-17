@@ -1,4 +1,5 @@
 import random
+import classes
 from classes import CharacterBonus
 from os import system
 from colorama import Fore, Back, Style
@@ -50,29 +51,64 @@ def battleHandler(character, enemy):
             print("ПРОИГРАЛ")
             return character, enemy
 
+def CriticalDamage(character):
+    Stamina = character.stamina
+    Damage = character.current_weapon.damage
+    CritChance = character.current_weapon.critchance
+    if (Stamina > 80):
+        if (random.random() < CritChance):
+            Damage *= random.randrange(80, 100)/100
+            character.stamina -= round(Damage*10)
+            return Damage
+        else:
+            return 0
+    elif (Stamina > 50):
+        if (random.random() < CritChance):
+            Damage *= random.randrange(50, 100)/100
+            character.stamina -= round(Damage*10)
+            return Damage
+        else:
+            return 0
+    elif (Stamina > 30):
+        if (random.random() < CritChance):
+            Damage *= random.randrange(30, 100)/100
+            character.stamina -= round(Damage*10)
+            return Damage
+        else:
+            return 0
+    elif (Stamina > 0):
+        if (random.random() < CritChance):
+            Damage *= random.randrange(0, 100)/100
+            character.stamina -= round(Damage*10)
+            return Damage
+        else:
+            return 0
+    elif (Stamina <= 0):
+        return 0
+
 def battleSystem(character, enemy, battleaction):
     # если игрок в стане
-    if character.bonus == CharacterBonus.stun: 
+    if character.bonus == classes.stun: 
         currentDamage = character.current_weapon.damage
 
     # если игрок кровоточит
-    elif character.bonus == CharacterBonus.bleeding:
+    elif character.bonus == classes.bleeding:
         currentDamage = character.current_weapon.damage
 
     # если игрок отравлен
-    elif character.bonus == CharacterBonus.poisoning:
+    elif character.bonus == classes.poisoning:
         currentDamage = character.current_weapon.damage
 
     # если игрок
-    elif character.bonus == CharacterBonus.regen: 
+    elif character.bonus == classes.regen: 
         currentDamage = character.current_weapon.damage
     
     # если игрок под усилением
-    elif character.bonus == CharacterBonus.gain:
+    elif character.bonus == classes.gain:
         currentDamage = character.current_weapon.damage
     
     # если на игрока наложена слабость
-    elif character.bonus == CharacterBonus.weakness:
+    elif character.bonus == classes.weakness:
         currentDamage = character.current_weapon.damage
     
     # если на игрока не действуют эффекты
@@ -82,7 +118,7 @@ def battleSystem(character, enemy, battleaction):
     # АТАКА
     if battleaction == attack:
         # Атака противника влоб
-        enemy.hp -= character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)
+        enemy.hp -= currentDamage - (currentDamage * enemy.armor) + CriticalDamage(character)
         enemy.hp = round(enemy.hp, 1)
         # Противник атакует в ответ
         character.hp -= enemy.damage - (enemy.damage * character.armor)

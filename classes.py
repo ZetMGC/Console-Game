@@ -8,8 +8,8 @@ from colorama import Fore, Back, Style
 PersonClass = ("PC_MAGICIAN", "PC_WARRIOR", "PC_ARCHER")
 magician, warrior, archer = PersonClass
 
-CharacterBonus = ("CB_STUN", "CB_BLEEDING", "CB_POISONING", "CB_REGEN", "CB_GAIN", "CB_WEAKNESS") # Оглушение, кровотечение, отравление, регенерация, усиление, слабость
-stun, bleeding, poisoning, regen, gain, weakness = CharacterBonus
+CharacterBonus = ("CB_STUN", "CB_BLEEDING", "CB_POISONING", "CB_REGEN", "CB_GAIN", "CB_WEAKNESS", "CB_NONE") # Оглушение, кровотечение, отравление, регенерация, усиление, слабость
+stun, bleeding, poisoning, regen, gain, weakness, none = CharacterBonus
 
 RangeClass = ("RC_NEAR", "RC_AVERAGE", "RC_FAR")
 near, average, far = RangeClass
@@ -32,7 +32,7 @@ class Person:
         self.pclass = None
         self.hp = None
         self.hpmax = None
-        self.bonus = None
+        self.bonus = none
 
         self.armor = None
         self.arrows = None
@@ -121,16 +121,11 @@ class Person:
 
 #--------------------------------------
 
+#базовый предмета
 class Item:
-    def __init__(self, name, itemclass, armor, hp, damage, heal, manaheal, weight, critdamage):
+    def __init__(self, name, itemclass):
         self.name = name
         self.itemclass = itemclass
-        self.armor = armor
-        self.hp = hp
-        self.damage = damage
-        self.heal = heal 
-        self.manaheal = manaheal  
-        self.weight = weight
         
 
     def info(self):
@@ -160,6 +155,22 @@ class Item:
             else:
                 continue
 
+#--------------------------------------
+
+#класс оружия
+class WeaponItem(Item):
+    def __init__(self, name, itemclass, damage, critchance):
+        super().__init__(name, itemclass)
+        self.damage = damage
+        self.critchance = critchance
+
+# класс зелий
+class PotionItem(Item):
+    def __init__(self, name, itemclass, heal, manaheal):
+        super().__init__(name, itemclass)
+        self.heal = heal 
+        self.manaheal = manaheal
+        
 #--------------------------------------
 
 class Enemy:

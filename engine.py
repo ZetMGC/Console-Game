@@ -2,7 +2,7 @@ import random
 import  classes
 from battle import battleHandler
 from os import system
-from classes import Item, Enemy, Location
+from classes import Item, WeaponItem, PotionItem, Enemy, Location
 from colorama import Fore, Back, Style
 
 #--------------------------------------
@@ -14,10 +14,10 @@ CurrentCase = None
 
 #--------------------------------------
 
-Potions = [ Item("Малое зелье здоровья", classes.potion, 0, 0, 0, 15, 0, 10),
-            Item("Среднее зелье здоровья", classes.potion, 0, 0, 0, 30, 0, 20)]
+Potions = [ PotionItem("Малое зелье здоровья", classes.potion, heal=15, manaheal=0),
+            PotionItem("Среднее зелье здоровья", classes.potion, heal=30, manaheal=0)]
 
-Weapons = [ Item("Деревянный меч", classes.weapon, 0, 0, 3, 0, 0, 25)]
+Weapons = [ WeaponItem("Деревянный меч", classes.weapon, damage=3, critchance=25) ]
 
 Enemies = [ Enemy("Кряква", 2, 10, 0, classes.spawn, classes.near), 
             Enemy("Каменный паук", 2, 10, 0.2, classes.forrest, classes.near)]
@@ -161,6 +161,7 @@ def enemyChecker(current_location):
             SituableEnemies.append(classes.Enemy(enemy.name, enemy.damage, enemy.hp, enemy.armor, enemy.location, enemy.range))
     
     return random.choice(SituableEnemies)
+
 #--------------------------------------
 
 def main():
