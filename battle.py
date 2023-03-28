@@ -2,6 +2,7 @@ import random
 import classes
 from classes import CharacterBonus
 from os import system
+from progress.bar import FillingSquaresBar
 from colorama import Fore, Back, Style
 
 #----------------------------------------------------------------
@@ -14,11 +15,17 @@ attack, dodge, block, hide, changepos = BattleActions
 def battleHandler(character, enemy):
     while True:
         if enemy.hp > 0 and character.hp > 0:
+            HPbar = FillingSquaresBar('Твое здоровье:', max = character.hpmax, suffix='%(index)d / %(max)d')
+
             system('CLS')
             print(Back.RED + "БИТВА" + Style.RESET_ALL)
             print("<------------------------------------------------------>\n")
 
-            print("Твое здоровье:", Fore.GREEN + str(character.hp) + Style.RESET_ALL, ".\nТвое оружие наносит:", Fore.GREEN + str(character.current_weapon.damage) + Style.RESET_ALL, "урона.\n")
+            HPbar.goto(character.hp)
+            HPbar.color = 'red'
+            HPbar.start()
+
+            print("\n\nТвое оружие наносит:", Fore.GREEN + str(character.current_weapon.damage) + Style.RESET_ALL, "урона.\n")
             print("Твой противник", Fore.RED + enemy.name + Style.RESET_ALL, ", он имеет", Fore.RED + str(enemy.hp) + Style.RESET_ALL, "здоровья.\n")
 
             print("<------------------------------------------------------>\n")
@@ -128,29 +135,39 @@ def battleSystem(character, enemy, battleaction):
     elif battleaction == dodge:
         if character.stamina >= 80:
             if random.randint(0, 3) > 0:
-                # удалось уклониться, атакуем двойным уроном, сами урона не получаем
-                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 2 - (character.current_weapon.damage * character.current_armor)
+                # удалось уклониться, атакуем с возможностью критического урона, а сами урона не получаем
+                enemy.hp -= 1.5*(currentDamage - (currentDamage * enemy.armor) + CriticalDamage(character))
                 enemy.hp = round(enemy.hp, 1)
-                character.stamina -= 20
+                character.stamina -= 5
             else:
                 # Враг атакует, если уколниться не удалось
                 character.hp -= enemy.damage - (enemy.damage * character.armor)
                 character.hp = round(character.hp, 1)
-                character.stamina -= 20
+                character.stamina -= 10
         elif character.stamina >= 50:
             # При меньшей стамине шанс уклонения ниже
-            if random.randint(0,5) > 3:
-                enemy.hp -= (character.current_weapon.damage - (character.current_weapon.damage * enemy.armor)) * 1.5 - (character.current_weapon.damage * character.current_armor)
+            if random.randint(0,5) >= 2:
+                enemy.hp -= 1.2*(currentDamage - (currentDamage * enemy.armor) + CriticalDamage(character))
                 enemy.hp = round(enemy.hp, 1)
-                character.stamina -= 20
+                character.stamina -= 5
             else:
                 character.hp -= enemy.damage - (enemy.damage * character.armor)
                 character.hp = round(character.hp, 1)
-                character.stamina -= 20
+                character.stamina -= 10
+        elif character.stamina >= 20:
+            # При меньшей стамине шанс уклонения ниже
+            if random.randint(0,5) > 3:
+                enemy.hp -= currentDamage - (currentDamage * enemy.armor) + CriticalDamage(character)
+                enemy.hp = round(enemy.hp, 1)
+                character.stamina -= 5
+            else:
+                character.hp -= enemy.damage - (enemy.damage * character.armor)
+                character.hp = round(character.hp, 1)
+                character.stamina -= 10
         else:
             character.hp -= enemy.damage - (enemy.damage * character.armor)
             character.hp = round(character.hp, 1)
-            character.stamina -= 20
+            character.stamina -= 10
 
     # БЛОК
     elif battleaction == block:

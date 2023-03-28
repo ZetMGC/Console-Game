@@ -1,4 +1,7 @@
 import random
+from os import system
+import time
+from progress.bar import FillingSquaresBar
 
 class dInfo:
     def __init__(self, name):
@@ -16,7 +19,16 @@ def debug():
 
 def main():
     print("Модуль стоит импортировать")
-    print(random.randrange(50, 100)/100)
+    bar = FillingSquaresBar('Progress', max=100, suffix='%(index)d%% / %(max)d%%')
+    bar.color = 'red'
+    bar.goto(10)
+    bar.start
+    for i in range(100):
+        # Do some work
+        bar.next()
+        time.sleep(0.1)
+    bar.goto(0)
+    system('CLS')
 
 if __name__ == "__main__":
     main()
