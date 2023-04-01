@@ -7,8 +7,8 @@ from colorama import Fore, Back, Style
 
 #--------------------------------------
 
-CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY")
-training, battle, walking, ineventory = CaseClass
+CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY", "CC_STATS")
+training, battle, walking, ineventory, stats= CaseClass
 
 CurrentCase = None
 
@@ -41,8 +41,8 @@ def caseHandler(currentcase, character, enemy):
             print(Fore.RED + "3. БРОНЯ" + Style.RESET_ALL)
             print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
 
-            decide = int(input())
-            if decide == 1:
+            decide = input()
+            if decide == "1":
                 if len(character.potionitem) < 1:
                     while True:
                         system("CLS")
@@ -65,7 +65,7 @@ def caseHandler(currentcase, character, enemy):
                         elif decide <= len(character.potionitem):
                             character.potionitem[decide-1].info()
                             
-            elif decide == 2:
+            elif decide == "2":
                 if len(character.weaponitem) < 1:
                     while True:
                         system("CLS")
@@ -87,7 +87,8 @@ def caseHandler(currentcase, character, enemy):
                             break
                         elif decide <= len(character.weaponitem):
                             character.weaponitem[decide-1].info()
-            elif decide == 3:
+
+            elif decide == "3":
                 if len(character.armoritem) < 1:
                     while True:
                         system("CLS")
@@ -102,14 +103,18 @@ def caseHandler(currentcase, character, enemy):
                     while True:
                         system("CLS")
                         for armor in character.armoritem:
-                            print(character.armoritem.index(armor) + 1, armor.name, "\n")
+                            print(character.armoritem.indJaex(armor) + 1, armor.name, "\n")
                         print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
                         decide = int(input())
                         if decide == 0:
                             break
                         elif decide <= len(character.armoritem):
                             character.armornitem[decide-1].info()
-            elif decide == 0:
+
+            elif decide == "4":
+                character.info()
+
+            elif decide == "0":
                 print("NAZAD")
                 break
             else:
@@ -124,16 +129,19 @@ def caseHandler(currentcase, character, enemy):
             print(Fore.RED + "1. ИДТИ ДАЛЬШЕ" + Style.RESET_ALL)
             print(Fore.RED + "2. ОБЫСКАТЬ ЛОКАЦИЮ" + Style.RESET_ALL)
             print(Fore.RED + "3. ВЕРНУТЬСЯ" + Style.RESET_ALL)
+            print(Fore.RED + "4. ИНФОРМАЦИЯ О ПЕРСОНАЖЕ" + Style.RESET_ALL)
             print(Fore.RED + "0. ИНВЕНТАРЬ" + Style.RESET_ALL)
 
-            decide = int(input())
-            if decide == 1: 
+            decide = input()
+            if decide == "1": 
                 character.current_location = Locations[Locations.index(character.current_location) + 1]
-            elif decide == 2:
+            elif decide == "2":
                 break
-            elif decide == 3:
+            elif decide == "3":
                 character.current_location = Locations[Locations.index(character.current_location) - 1]
-            elif decide == 0:
+            elif decide == "4":
+                character.info()
+            elif decide == "0":
                 caseHandler(ineventory, character, None)
             else:
                 break

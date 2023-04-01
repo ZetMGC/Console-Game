@@ -1,5 +1,6 @@
 from os import system
 from types import FrameType
+from progress.bar import FillingSquaresBar
 import colorama
 from colorama import Fore, Back, Style
 
@@ -51,12 +52,15 @@ class Person:
             print("<------------------------------------------------------>\n")
 
             print("Твое имя: ", Fore.RED + self.name, "\n" + Style.RESET_ALL)
-            print("У тебя", Fore.GREEN + str(self.hp) + Style.RESET_ALL, "здоровья\n")
+            HPbar = FillingSquaresBar('Твое здоровье:', max = self.hpmax, suffix='%(index)d / %(max)d')
+            HPbar.goto(self.hp)
+            HPbar.color = 'red'
+            HPbar.start()
 
             if self.sex == True:
-                print("Твой пол мужской\n")
+                print("\nТвой пол мужской\n")
             else:
-                print("Твой пол женский\n")
+                print("\nТвой пол женский\n")
             
             if self.pclass == magician:
                 print("Ты маг\n")
@@ -65,26 +69,39 @@ class Person:
             elif self.pclass == archer:
                 print("Ты лучник\n")
 
+            if self.current_weapon != None:
+                print("Твое оружие: ", Fore.GREEN + self.current_weapon.name + Style.RESET_ALL, end="\t\t")
+            else:
+                print("Твое оружие:", Fore.RED + "Нет." + Style.RESET_ALL, end="\t\t")
+            
+            if self.current_armor != None:
+                print("Твоя броня: ", Fore.GREEN + self.current_armor.name, "\n" + Style.RESET_ALL)
+            else:
+                print("Твоя броня:", Fore.RED + "Нет.\n" + Style.RESET_ALL)            
+
             print("<------------------------------------------------------>")
             print(Fore.RED + "0. ПРОДОЛЖИТЬ" + Style.RESET_ALL)
-            decide = int(input())
-            if decide == 0:
+            decide = input()
+            if decide == "0":
                 break
             else:
                 continue
 
+            HPbar.finish()
+
     def creator(self):
+        system('CLS')
         self.name = input("Введите имя персонажа: ")
         system('CLS')
 
         while True:
             print("Введите", Fore.BLUE + "\"1\"", Style.RESET_ALL + ", чтобы выбрать мужской пол.\nВведите", Fore.BLUE + "\"2\"", Style.RESET_ALL + ", чтобы выбрать женский пол.\n")
-            sex = int(input())
+            sex = input()
             system('CLS')
-            if sex == 1:
+            if sex == "1":
                 self.sex = True
                 break
-            elif sex == 2:
+            elif sex == "2":
                 self.sex = False 
                 break
             else:
@@ -93,23 +110,23 @@ class Person:
 
         while True:
             print("Введите", Fore.BLUE + "\"1\"", Style.RESET_ALL + ", чтобы выбрать класс \"Воин\".\nВведите", Fore.BLUE + "\"2\"", Style.RESET_ALL + ", чтобы выбрать класс \"Маг\".\nВведите", Fore.BLUE + "\"3\"", Style.RESET_ALL + ", чтобы выбрать класс \"Лучник\".\n")
-            pclass = int(input())
+            pclass = input()
             system('CLS')
-            if pclass == 1:
+            if pclass == "1":
                 self.pclass = warrior
                 self.hpmax = 125
                 self.hp = self.hpmax
                 self.armor = 0.45
                 self.stamina = 100
                 break
-            elif pclass == 2:
+            elif pclass == "2":
                 self.pclass = magician
                 self.hpmax = 75
                 self.hp = self.hpmax
                 self.armor = 0.15
                 self.stamina = 100
                 break
-            elif pclass == 3:
+            elif pclass == "3":
                 self.pclass = archer
                 self.hpmax = 100
                 self.hp = self.hpmax

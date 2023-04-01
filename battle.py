@@ -33,18 +33,21 @@ def battleHandler(character, enemy):
             print(Fore.RED + "2. УКЛОНИТЬСЯ" + Style.RESET_ALL)
             print(Fore.RED + "3. БЛОКИРОВАТЬ" + Style.RESET_ALL)
             print(Fore.RED + "4. ЗАНЯТЬ ВЫГОДНУЮ ПОЗИЦИЮ" + Style.RESET_ALL)
+            print(Fore.RED + "5. ИНФОРМАЦИЯ О ПЕРСОНАЖЕ" + Style.RESET_ALL)
             print(Fore.RED + "0. СБЕЖАТЬ" + Style.RESET_ALL)
 
-            decide = int(input())
-            if decide == 1:
+            decide = input()
+            if decide == "1":
                 battleSystem(character, enemy, attack)
-            elif decide == 2:
+            elif decide == "2":
                 battleSystem(character, enemy, dodge)
-            elif decide == 3:
+            elif decide == "3":
                 battleSystem(character, enemy, block)
-            elif  decide == 4:
+            elif decide == "4":
                 battleSystem(character, enemy, changepos)
-            elif decide == 0:
+            elif decide == "5":
+                character.info()
+            elif decide == "0":
                 battleSystem(character, enemy, hide)
             else:
                 continue
