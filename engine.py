@@ -1,5 +1,6 @@
 import random
-import  classes
+import classes, inventory
+from inventory import InventoryHandler
 from battle import battleHandler
 from os import system
 from classes import Item, WeaponItem, PotionItem, Enemy, Location
@@ -8,8 +9,7 @@ from colorama import Fore, Back, Style
 #--------------------------------------
 
 CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY", "CC_STATS")
-training, battle, walking, ineventory, stats= CaseClass
-
+training, battle, walking, inventory, stats= CaseClass
 CurrentCase = None
 
 #--------------------------------------
@@ -31,95 +31,8 @@ def caseHandler(currentcase, character, enemy):
     if currentcase == battle:
         character, enemy = battleHandler(character, enemy)
 
-    elif currentcase == ineventory:
-        while True:
-            system("CLS")
-            print(Back.BLUE + "ИНВЕНТАРЬ\n" + Style.RESET_ALL)
-            print("<------------------------------------------------------>\n")
-            print(Fore.RED + "1. ЗЕЛЬЯ" + Style.RESET_ALL)
-            print(Fore.RED + "2. ОРУЖИЕ" + Style.RESET_ALL)
-            print(Fore.RED + "3. БРОНЯ" + Style.RESET_ALL)
-            print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-
-            decide = input()
-            if decide == "1":
-                if len(character.potionitem) < 1:
-                    while True:
-                        system("CLS")
-                        print("У тебя нет зелий\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        else:
-                            continue
-                elif len(character.potionitem) > 0:
-                    while True:
-                        system("CLS")
-                        for potion in character.potionitem:
-                            print(character.potionitem.index(potion) + 1, potion.name, "\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        elif decide <= len(character.potionitem):
-                            character.potionitem[decide-1].info()
-                            
-            elif decide == "2":
-                if len(character.weaponitem) < 1:
-                    while True:
-                        system("CLS")
-                        print("У тебя нет оружия\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        else:
-                            continue
-                elif len(character.weaponitem) > 0:
-                    while True:
-                        system("CLS")
-                        for weapon in character.weaponitem:
-                            print(character.weaponitem.index(weapon) + 1, weapon.name, "\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        elif decide <= len(character.weaponitem):
-                            character.weaponitem[decide-1].info()
-
-            elif decide == "3":
-                if len(character.armoritem) < 1:
-                    while True:
-                        system("CLS")
-                        print("У тебя нет брони\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        else:
-                            continue
-                elif len(character.armoritem) > 0:
-                    while True:
-                        system("CLS")
-                        for armor in character.armoritem:
-                            print(character.armoritem.indJaex(armor) + 1, armor.name, "\n")
-                        print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
-                        decide = int(input())
-                        if decide == 0:
-                            break
-                        elif decide <= len(character.armoritem):
-                            character.armornitem[decide-1].info()
-
-            elif decide == "4":
-                character.info()
-
-            elif decide == "0":
-                print("NAZAD")
-                break
-            else:
-                continue
-    
+    elif currentcase == inventory:
+        InventoryHandler(character)
     elif currentcase == walking:
         while True:
             system("CLS")
@@ -142,7 +55,7 @@ def caseHandler(currentcase, character, enemy):
             elif decide == "4":
                 character.info()
             elif decide == "0":
-                caseHandler(ineventory, character, None)
+                caseHandler(inventory, character, None)
             else:
                 break
 

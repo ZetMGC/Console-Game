@@ -180,6 +180,32 @@ class WeaponItem(Item):
         super().__init__(name, itemclass)
         self.damage = damage
         self.critchance = critchance
+    
+    def info(self, character):
+        while True:
+            system('CLS')
+            print("<------------------------------------------------------>\n")
+
+            print("Это", Fore.BLUE + self.name + Style.RESET_ALL, ".\n")
+            print("Наносит:", Fore.GREEN + str(self.damage) + Style.RESET_ALL, "урона.\n")
+
+            print("<------------------------------------------------------>\n")
+            if character.current_weapon == self:
+                print(Fore.RED + "1. ПЕРЕСТАТЬ ИСПОЛЬЗОВАТЬ" + Style.RESET_ALL)
+            else:
+                print(Fore.RED + "1. ИСПОЛЬЗОВАТЬ" + Style.RESET_ALL)
+            print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
+
+            decide = input()
+            if decide == "1":
+                if character.current_weapon == self:
+                    character.current_weapon = None
+                else:
+                    character.current_weapon = self
+            elif decide == "0":
+                break
+            else:
+                continue
 
 # класс зелий
 class PotionItem(Item):
@@ -187,6 +213,29 @@ class PotionItem(Item):
         super().__init__(name, itemclass)
         self.heal = heal 
         self.manaheal = manaheal
+    
+    def info(self, character):
+        while True:
+            system('CLS')
+            print("<------------------------------------------------------>\n")
+
+            print("Это", Fore.BLUE + self.name + Style.RESET_ALL, ".\n")
+            print("Оно восстанавливает:", Fore.GREEN + str(self.heal) + Style.RESET_ALL, "здоровья.\n")
+            print("Оно восстанавливает:", Fore.GREEN + str(self.manaheal) + Style.RESET_ALL, "маны.\n")
+
+            print("<------------------------------------------------------>\n")
+            print(Fore.RED + "1. ИСПОЛЬЗОВАТЬ" + Style.RESET_ALL)
+            print(Fore.RED + "0. НАЗАД" + Style.RESET_ALL)
+
+            decide = input()
+            if decide == "1":
+                character.hp += self.heal
+                character.potionitem.remove(self)
+                break
+            elif decide == "0":
+                break
+            else:
+                continue
         
 #--------------------------------------
 
