@@ -7,9 +7,9 @@ from classes import Item, WeaponItem, PotionItem, Enemy, Location
 from colorama import Fore, Back, Style
 
 #--------------------------------------
-
-CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY", "CC_STATS")
-training, battle, walking, inventory, stats= CaseClass
+""
+CaseClass = ("CC_TRAINING", "CC_BATTLE", "CC_WALKING", "CC_INVENORY", "CC_STATS", "CC_SEARCH")
+training, battle, walking, inventory, stats, search= CaseClass
 CurrentCase = None
 
 #--------------------------------------
@@ -33,6 +33,32 @@ def caseHandler(currentcase, character, enemy):
 
     elif currentcase == inventory:
         InventoryHandler(character)
+    
+    elif currentcase == search:
+        while True:
+            system("CLS")
+            print("<------------------------------------------------------>\n")
+            if len(character.current_location.Ground) == 0:
+                print("На земле пусто.\n")
+            else:
+                print("На земле лежит:\n")
+                for item in character.current_location.Ground:
+                    print(Fore.RED, (character.current_location.Ground(item) + 1), ". ", Style.RESET_ALL, item.name, "\n", sep="")
+            print("<------------------------------------------------------>\n")
+            print(Fore.RED + "1. ОБЫСКАТЬ ЛОКАЦИЮ" + Style.RESET_ALL)
+            print(Fore.RED + "2. ПОДОБРАТЬ ПРЕДМЕТ" + Style.RESET_ALL)
+            print(Fore.RED + "0. ЗАКОНЧИТЬ ОБЫСК" + Style.RESET_ALL)
+
+            decide = input()
+            if decide == "1": 
+                character.current_location.DropDecider(random.randint(0,1))
+            elif decide == "2":
+                continue
+            elif decide == "0":
+                break
+            else:
+                continue
+
     elif currentcase == walking:
         while True:
             system("CLS")
@@ -49,7 +75,7 @@ def caseHandler(currentcase, character, enemy):
             if decide == "1": 
                 character.current_location = Locations[Locations.index(character.current_location) + 1]
             elif decide == "2":
-                break
+                caseHandler(search, character, None)
             elif decide == "3":
                 character.current_location = Locations[Locations.index(character.current_location) - 1]
             elif decide == "4":

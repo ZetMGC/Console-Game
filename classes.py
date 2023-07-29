@@ -1,7 +1,9 @@
+import colorama
+import random
 from os import system
 from types import FrameType
 from progress.bar import FillingSquaresBar
-import colorama
+
 from colorama import Fore, Back, Style
 
 #--------------------------------------
@@ -20,6 +22,9 @@ potion, unknownpotion, weapon, armor, acc = ItemClass
 
 LocationClass = ("LC_FORREST", "LC_SPAWN")
 forrest, spawn = LocationClass
+
+LocationDropClass = ("LDC_ORDINARY", "LDC_RARE", "LDC_LEGENDARY")
+ordinary, rare, legendary = LocationDropClass
 
 #--------------------------------------
 
@@ -249,7 +254,15 @@ class Enemy:
         self.range = range
 
 class Location:
+    Drop = ([], [], [], [])
+    ordinary, rare, legendary, ground = Drop
+    
     def __init__(self, name, locationclass, enemychanse):
         self.locationclass = locationclass
         self.name = name
         self.enemychanse = enemychanse
+        
+
+    def DropDecider(chance):
+        if chance > 0.4 and chance < 0.8:
+            ground.append(random.choice(ordinary))
