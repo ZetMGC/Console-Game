@@ -263,6 +263,6 @@ class Location:
         self.enemychanse = enemychanse
         
 
-    def DropDecider(chance):
-        if chance > 0.4 and chance < 0.8:
-            ground.append(random.choice(ordinary))
+    def DropDecider(self, chance):
+        if chance > 0.4 and chance < 0.9:
+            self.ground.append(random.choice(self.ordinary))

@@ -26,6 +26,45 @@ Locations = [ Location("Спавн", classes.spawn, 0.15),
               Location("Лес", classes.forrest, 0.2)]
 
 #--------------------------------------
+#функция, наполняющая лутом локации игры
+def locationInit(character):
+    if character.current_location.locationclass == classes.spawn:
+        character.current_location.ordinary.append(Potions[0])
+
+def pickUp(character, storage):
+    while True:
+        system("CLS")
+        print("<------------------------------------------------------>\n")
+        print("Введи номер предмета, который хочешь подобрать\n")
+        if len(storage) > 0:
+            i = 0
+            while i < len(storage):
+                print(Fore.RED, i + 1, ". ", Style.RESET_ALL, storage[i].name, "\n", sep="")
+                i += 1
+        else:
+            break
+                
+        print("<------------------------------------------------------>\n")
+        print(Fore.RED + "0. ОТМЕНА" + Style.RESET_ALL)
+
+        decide = input()
+        try: 
+            decide = int(decide)
+            if decide > 0 and decide <= len(storage):
+                if storage[decide-1].itemclass == classes.potion:
+                    character.potionitem.append(storage[decide-1])
+                    storage.pop(decide-1)
+                elif storage[decide-1].itemclass == classes.weapon:
+                    character.weaponitem.append(storage[decide-1])
+                    storage.pop(decide-1)
+                elif storage[decide-1].itemclass == classes.armor:
+                    character.armoritem.append(storage[decide-1])
+                    storage.pop(decide-1)
+            elif decide == 0:
+                break
+        except ValueError:
+            continue
+        
 #обработчик выборов игоком и реакции интерфейса на выбор
 def caseHandler(currentcase, character, enemy):
     if currentcase == battle:
@@ -34,16 +73,20 @@ def caseHandler(currentcase, character, enemy):
     elif currentcase == inventory:
         InventoryHandler(character)
     
+    #если игрок решил обыскать
     elif currentcase == search:
         while True:
             system("CLS")
             print("<------------------------------------------------------>\n")
-            if len(character.current_location.Ground) == 0:
+            if len(character.current_location.ground) == 0:
                 print("На земле пусто.\n")
             else:
                 print("На земле лежит:\n")
-                for item in character.current_location.Ground:
-                    print(Fore.RED, (character.current_location.Ground(item) + 1), ". ", Style.RESET_ALL, item.name, "\n", sep="")
+                i = 0
+                while i < len(character.current_location.ground):
+                    print(Fore.RED, i + 1, ". ", Style.RESET_ALL, character.current_location.ground[i].name, "\n", sep="")
+                    i += 1
+                    
             print("<------------------------------------------------------>\n")
             print(Fore.RED + "1. ОБЫСКАТЬ ЛОКАЦИЮ" + Style.RESET_ALL)
             print(Fore.RED + "2. ПОДОБРАТЬ ПРЕДМЕТ" + Style.RESET_ALL)
@@ -51,9 +94,9 @@ def caseHandler(currentcase, character, enemy):
 
             decide = input()
             if decide == "1": 
-                character.current_location.DropDecider(random.randint(0,1))
+                character.current_location.DropDecider(random.random())
             elif decide == "2":
-                continue
+                pickUp(character, character.current_location.ground)
             elif decide == "0":
                 break
             else:
@@ -118,6 +161,7 @@ def main():
     player.creator()
     player.info()
     player.current_location = Locations[0]
+    locationInit(player)
     player.current_weapon = Weapons[0]
     player.potionitem.append(Potions[0])
     player.weaponitem.append(Weapons[0])
