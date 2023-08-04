@@ -265,4 +265,7 @@ class Location:
 
     def DropDecider(self, chance):
         if chance > 0.4 and chance < 0.9:
-            self.ground.append(random.choice(self.ordinary))
+            if len(self.ordinary) > 0:
+                drop = random.choice(self.ordinary)
+                self.ground.append(drop)
+                self.ordinary.remove(drop)
