@@ -17,13 +17,15 @@ CurrentCase = None
 Potions = [ PotionItem("Малое зелье здоровья", classes.potion, heal=15, manaheal=0),
             PotionItem("Среднее зелье здоровья", classes.potion, heal=30, manaheal=0)]
 
-Weapons = [ WeaponItem("Деревянный меч", classes.weapon, damage=3, critchance=25) ]
+Weapons = [ WeaponItem("Деревянный меч", classes.weapon, damage=3, critchance=25), 
+            WeaponItem("Затупленный железный меч", classes.weapon, damage=10, critchance=15)]
 
 Enemies = [ Enemy("Кряква", 2, 10, 0, classes.spawn, classes.near), 
             Enemy("Каменный паук", 2, 10, 0.2, classes.forrest, classes.near)]
 
 Locations = [ Location("Спавн", classes.spawn, 0.15),
-              Location("Лес", classes.forrest, 0.2)]
+              Location("Лес", classes.forrest, 0.2),
+              Location("Тропинка в лесу", classes.forrest, 0.10)]
 
 #--------------------------------------
 #функция, наполняющая лутом локации игры
@@ -128,9 +130,6 @@ def caseHandler(currentcase, character, enemy):
             else:
                 break
 
-def interface(currentcase):
-    print()
-
 def positionChanger(currentPos, rangeClass, stamina=100):
     if stamina > 80:
         if random(0, 3) > 0:
@@ -142,7 +141,6 @@ def decider(case, character):
             caseHandler(battle, character, enemyChecker(character.current_location.locationclass))
         else:
             caseHandler(walking, character, None)
-
 
 def enemyChecker(current_location):
     SituableEnemies = []
